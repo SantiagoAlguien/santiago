@@ -5,7 +5,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 
 
 @Component({
-  selector: 'app-profile',
+  selector: 'app-portfolio',
   standalone: true,
   imports: [AvatarModule, ButtonModule, ProfileComponent],
   templateUrl: './portfolio.component.html',

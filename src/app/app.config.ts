@@ -8,6 +8,7 @@ import Aura from '@primeng/themes/aura';
 
 export const appConfig: ApplicationConfig = {
     providers: [
+    provideRouter(routes),
     providePrimeNG({
       theme: {
         preset: Aura
