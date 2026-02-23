@@ -5,13 +5,14 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { ExperienceComponent } from './components/experience/experience.component';
 import { SkillsComponent } from './components/skills/skills.component';
 import { EducationComponent } from './components/education/education.component';
+import { ContactComponent } from './components/contact/contact.component';
 
 
 
 @Component({
   selector: 'app-portfolio',
   standalone: true,
-  imports: [AvatarModule, ButtonModule, ProfileComponent, ExperienceComponent, SkillsComponent, EducationComponent],
+  imports: [AvatarModule, ButtonModule, ProfileComponent, ExperienceComponent, SkillsComponent, EducationComponent, ContactComponent],
   templateUrl: './portfolio.component.html',
   styleUrls: ['./portfolio.component.scss']
 })
