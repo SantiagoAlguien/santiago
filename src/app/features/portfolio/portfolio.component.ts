@@ -3,12 +3,14 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ProfileComponent } from './components/profile/profile.component';
 import { ExperienceComponent } from './components/experience/experience.component';
+import { SkillsComponent } from './components/skills/skills.component';
+
 
 
 @Component({
   selector: 'app-portfolio',
   standalone: true,
-  imports: [AvatarModule, ButtonModule, ProfileComponent, ExperienceComponent ],
+  imports: [AvatarModule, ButtonModule, ProfileComponent, ExperienceComponent, SkillsComponent],
   templateUrl: './portfolio.component.html',
   styleUrls: ['./portfolio.component.scss']
 })
