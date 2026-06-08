@@ -1,0 +1,46 @@
+<p-toast />
+
+<section class="login-page">
+  <div class="login-card">
+    <h1>{{ 'login.title' | translate }}</h1>
+
+    <form (submit)="onSubmit($event)">
+      <div class="field">
+        <label for="username">{{ 'login.username' | translate }}</label>
+        <input
+          pInputText
+          id="username"
+          type="text"
+          class="w-full"
+          [formField]="loginForm.username"
+        />
+        @if (loginForm.username().touched() && loginForm.username().invalid()) {
+          <p class="text-error">{{ loginForm.username().errors()[0].message | translate }}</p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="password">{{ 'login.password' | translate }}</label>
+        <input
+          pInputText
+          id="password"
+          type="password"
+          class="w-full"
+          [formField]="loginForm.password"
+        />
+        @if (loginForm.password().touched() && loginForm.password().invalid()) {
+          <p class="text-error">{{ loginForm.password().errors()[0].message | translate }}</p>
+        }
+      </div>
+
+      <button
+        pButton
+        type="submit"
+        [label]="'login.submit' | translate"
+        class="w-full"
+        [loading]="submitting()"
+        [disabled]="loginForm().invalid() || submitting()"
+      ></button>
+    </form>
+  </div>
+</section>

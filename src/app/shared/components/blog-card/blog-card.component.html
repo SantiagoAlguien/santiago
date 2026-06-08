@@ -1,0 +1,46 @@
+<article class="blog-card">
+  <a class="blog-card-link" [routerLink]="['/blogs', blog().id]">
+    <div class="blog-card-image" [class.has-image]="imageUrl()">
+      @if (imageUrl()) {
+        <img [src]="imageUrl()" [alt]="blog().title" />
+      } @else {
+        <div class="blog-card-placeholder"></div>
+      }
+    </div>
+    <div class="blog-card-body">
+      <span class="tag">{{ sectionName() }}</span>
+      <h3>{{ blog().title }}</h3>
+      <p>{{ excerpt() }}</p>
+      <div class="meta">
+        <span>{{ author() }}</span>
+        <span class="dot">•</span>
+        <span>{{ readTime() }}</span>
+        @if (blog().createdAt) {
+          <span class="dot">•</span>
+          <span>{{ blog().createdAt | date: 'mediumDate' }}</span>
+        }
+      </div>
+    </div>
+  </a>
+
+  @if (showAdminActions()) {
+    <div class="admin-actions">
+      <button
+        type="button"
+        class="action-btn edit"
+        aria-label="Editar blog"
+        (click)="onEdit($event)"
+      >
+        <i class="pi pi-pencil"></i>
+      </button>
+      <button
+        type="button"
+        class="action-btn delete"
+        aria-label="Eliminar blog"
+        (click)="onDelete($event)"
+      >
+        <i class="pi pi-trash"></i>
+      </button>
+    </div>
+  }
+</article>

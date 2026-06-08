@@ -1,0 +1,41 @@
+<nav class="navbar" aria-label="Navegación principal">
+  <div class="container navbar-inner">
+    <div class="brand-toggle">
+      <a
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="brand-tab cv"
+      >
+        {{ 'nav.cv' | translate }}
+      </a>
+      <a routerLink="/blogs" routerLinkActive="active" class="brand-tab blog">
+        {{ 'nav.blog' | translate }}
+      </a>
+    </div>
+
+    <div class="actions">
+      <button
+        type="button"
+        class="lang-btn"
+        (click)="toggleLanguage()"
+      >
+        <i class="pi pi-globe"></i>
+        {{ languageLabel() }}
+        <i class="pi pi-chevron-down"></i>
+      </button>
+
+      @if (isAuthenticated()) {
+        <span class="username">{{ currentUsername() }}</span>
+        <button type="button" class="btn-secondary" (click)="logout()">
+          {{ 'nav.logout' | translate }}
+        </button>
+      } @else {
+        <button type="button" class="btn-primary login-btn" (click)="login()">
+          <i class="pi pi-user"></i>
+          {{ 'nav.login' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+</nav>

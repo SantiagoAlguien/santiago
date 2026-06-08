@@ -1,0 +1,27 @@
+.image-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.preview-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.preview-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+
+  img {
+    max-width: 100%;
+    max-height: 12rem;
+    border-radius: var(--radius-md);
+    object-fit: contain;
+    border: 1px solid var(--border-color);
+  }
+}

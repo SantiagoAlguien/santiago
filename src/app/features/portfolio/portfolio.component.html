@@ -1,9 +1,44 @@
-<div class="container">
-  <div> Visitas totales: {{visits}}</div>
-  
-  <app-profile></app-profile>
-  <app-experience></app-experience>
-  <app-skills></app-skills>
-  <app-education></app-education>
-  <app-contact></app-contact>
-</div>
+<section class="hero">
+  <div class="container hero-content">
+    <div class="profile-area">
+      <img
+        ngSrc="assets/profile.png"
+        width="224"
+        height="227"
+        priority
+        [alt]="'portfolio.title' | translate"
+        class="profile-image"
+      />
+      <div class="profile-text">
+        <h1>{{ 'portfolio.title' | translate }}</h1>
+        <p class="subtitle">{{ 'portfolio.subtitle' | translate }}</p>
+        <p class="bio">{{ 'portfolio.bio' | translate }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blogs-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>{{ 'portfolio.latest' | translate }}</h2>
+      <p>{{ 'portfolio.latestDesc' | translate }}</p>
+    </div>
+
+    @if (loading()) {
+      <app-loading-skeleton [count]="3" />
+    } @else if (blogs().length === 0) {
+      <p class="empty-state">{{ 'portfolio.empty' | translate }}</p>
+    } @else {
+      <div class="blog-grid">
+        @for (blog of blogs(); track blog.id) {
+          <app-blog-card [blog]="blog" [sectionName]="sectionName(blog.sectionIds)" />
+        }
+      </div>
+    }
+
+    <div class="section-footer">
+      <a routerLink="/blogs" class="btn-primary">{{ 'portfolio.viewAll' | translate }}</a>
+    </div>
+  </div>
+</section>

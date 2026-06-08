@@ -1,0 +1,81 @@
+<p-toast />
+
+@if (loading()) {
+  <p class="loading-text">{{ 'section.loading' | translate }}</p>
+} @else {
+  <section class="form-page">
+    <div class="form-card">
+      <div class="form-header">
+        <h1>{{ 'section.edit' | translate }}</h1>
+        <button
+          pButton
+          type="button"
+          [label]="'section.back' | translate"
+          icon="pi pi-times"
+          severity="secondary"
+          (click)="navigateBack()"
+        ></button>
+      </div>
+
+      <form (submit)="onSubmit($event)">
+        <div class="field">
+          <label for="name">{{ 'section.name' | translate }}</label>
+          <input pInputText id="name" class="w-full" [formField]="sectionForm.name" />
+          @if (sectionForm.name().touched() && sectionForm.name().invalid()) {
+            <p class="text-error">{{ sectionForm.name().errors()[0].message | translate }}</p>
+          }
+        </div>
+
+        <div class="field">
+          <label for="description">{{ 'section.description' | translate }}</label>
+          <p class="field-hint">{{ 'section.imagesInEditor' | translate }}</p>
+          <app-rich-text-editor
+            inputId="description"
+            name="description"
+            [content]="sectionModel().description"
+            (contentChange)="updateDescription($event)"
+          />
+          @if (sectionForm.description().touched() && sectionForm.description().invalid()) {
+            <p class="text-error">{{ sectionForm.description().errors()[0].message | translate }}</p>
+          }
+        </div>
+
+        @if (sectionImages().length > 0) {
+          <div class="field">
+            <label>{{ 'blog.imagePreview' | translate }}</label>
+            <div class="section-images">
+              @for (image of sectionImages(); track image.url) {
+                <div class="section-image-item">
+                  <img [src]="image.previewUrl" [alt]="image.url" />
+                  <button
+                    pButton
+                    type="button"
+                    severity="danger"
+                    [label]="'section.discard' | translate"
+                    (click)="discardImage(image.url)"
+                  ></button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <div class="actions">
+          <button
+            pButton
+            type="button"
+            [label]="'blog.cancel' | translate"
+            severity="secondary"
+            (click)="navigateBack()"
+          ></button>
+          <button
+            pButton
+            type="submit"
+            [label]="'blog.accept' | translate"
+            [loading]="submitting()"
+          ></button>
+        </div>
+      </form>
+    </div>
+  </section>
+}

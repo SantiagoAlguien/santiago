@@ -1,0 +1,40 @@
+<p-toast />
+<p-confirmDialog />
+
+<section class="blogs-section">
+  <div class="container">
+    <div class="page-header">
+      <div>
+        <h2>{{ 'blog.title' | translate }}</h2>
+        <p>{{ 'blog.desc' | translate }}</p>
+      </div>
+      @if (isAdmin()) {
+        <button
+          pButton
+          type="button"
+          [label]="'blog.add' | translate"
+          icon="pi pi-plus"
+          (click)="createBlog()"
+        ></button>
+      }
+    </div>
+
+    @if (loading()) {
+      <app-loading-skeleton [count]="6" />
+    } @else if (blogs().length === 0) {
+      <p class="empty-state">{{ 'blog.empty' | translate }}</p>
+    } @else {
+      <div class="blog-grid">
+        @for (blog of blogs(); track blog.id) {
+          <app-blog-card
+            [blog]="blog"
+            [sectionName]="sectionName(blog.sectionIds)"
+            [showAdminActions]="isAdmin()"
+            (edit)="editBlog($event)"
+            (delete)="deleteBlog($event)"
+          />
+        }
+      </div>
+    }
+  </div>
+</section>

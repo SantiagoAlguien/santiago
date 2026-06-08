@@ -1,0 +1,109 @@
+<p-toast />
+<p-confirmDialog />
+
+@if (loading()) {
+  <section class="blog-view-loading">
+    <app-loading-skeleton [count]="2" />
+  </section>
+} @else if (blog()) {
+  <article class="blog-view">
+    <div class="container">
+      <a routerLink="/blogs" class="back-link">
+        <i class="pi pi-arrow-left"></i> {{ 'blog.back' | translate }}
+      </a>
+
+      <header class="blog-header">
+        <h1>{{ blog()!.title }}</h1>
+
+        <div class="intro-layout">
+          <aside class="meta-sidebar">
+            <div class="meta-item">
+              <span class="label">{{ 'blog.section' | translate }}</span>
+              <span class="value">{{ sectionNames(blog()!.sectionIds) }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">{{ 'blog.reading' | translate }}</span>
+              <span class="value">{{ readTime() }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">{{ 'blog.author' | translate }}</span>
+              <span class="value">{{ author() }}</span>
+            </div>
+            @if (blog()!.createdAt) {
+              <div class="meta-item">
+                <span class="label">{{ 'blog.date' | translate }}</span>
+                <span class="value">{{ blog()!.createdAt | date: 'mediumDate' }}</span>
+              </div>
+            }
+          </aside>
+
+          <div class="intro-content">
+            <p class="excerpt-text">{{ excerpt(blog()!.content) }}</p>
+          </div>
+        </div>
+
+        @if (heroImage()) {
+          <div class="hero-image">
+            <img [src]="heroImage()" [alt]="blog()!.title" />
+          </div>
+        }
+
+        @if (isAdmin()) {
+          <div class="admin-bar">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-pencil"
+              [label]="'blog.edit' | translate"
+              (click)="editBlog()"
+            ></button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-trash"
+              [label]="'blog.delete' | translate"
+              severity="danger"
+              (click)="deleteBlog()"
+            ></button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-list"
+              [label]="'blog.manageSections' | translate"
+              severity="success"
+              (click)="manageSections()"
+            ></button>
+          </div>
+        }
+      </header>
+
+      <section class="article-content" [innerHTML]="sectionHtml(blog()!.content) | safeHtml"></section>
+
+      @for (section of blogSections(); track section.id) {
+        <section class="section-content">
+          <h2>{{ section.name }}</h2>
+          <div [innerHTML]="sectionHtml(section.description) | safeHtml"></div>
+        </section>
+      }
+
+      @if (relatedBlogs().length > 0) {
+        <section class="related-posts">
+          <h2>{{ 'blog.related' | translate }}</h2>
+          <div class="related-grid">
+            @for (related of relatedBlogs(); track related.id) {
+              <app-blog-card
+                [blog]="related"
+                [sectionName]="sectionNames(related.sectionIds)"
+              />
+            }
+          </div>
+        </section>
+      }
+    </div>
+  </article>
+} @else {
+  <section class="empty-state">
+    <p>{{ 'blog.notFound' | translate }}</p>
+    <a routerLink="/blogs" class="btn-primary">{{ 'blog.back' | translate }}</a>
+  </section>
+}

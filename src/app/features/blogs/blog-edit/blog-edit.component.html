@@ -1,0 +1,95 @@
+<p-toast />
+
+@if (loading()) {
+  <p class="loading-text">{{ 'blog.loading' | translate }}</p>
+} @else {
+  <section class="form-page">
+    <div class="form-card">
+      <h1>{{ 'blog.editTitle' | translate }}</h1>
+
+      <form (submit)="onSubmit($event)">
+        <div class="field">
+          <label for="title">{{ 'blog.titleLabel' | translate }}</label>
+          <input pInputText id="title" class="w-full" [formField]="blogForm.title" />
+          @if (blogForm.title().touched() && blogForm.title().invalid()) {
+            <p class="text-error">{{ blogForm.title().errors()[0].message | translate }}</p>
+          }
+        </div>
+
+        <div class="field">
+          <label>{{ 'blog.sectionsOfBlog' | translate }}</label>
+          <div class="sections-panel">
+            @if (blogSections().length === 0) {
+              <p class="sections-empty">{{ 'blog.noSections' | translate }}</p>
+            }
+            @for (section of blogSections(); track section.id) {
+              <div class="section-item">
+                <div class="section-info">
+                  <strong>{{ section.name }}</strong>
+                  <p>{{ sectionExcerpt(section.description) }}</p>
+                </div>
+              </div>
+            }
+            <button
+              pButton
+              type="button"
+              icon="pi pi-list"
+              [label]="'blog.manageSections' | translate"
+              (click)="manageSections()"
+            ></button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="duracion">{{ 'blog.duracionLabel' | translate }}</label>
+          <input pInputText id="duracion" class="w-full" [formField]="blogForm.duracion" />
+          <p class="field-hint">{{ 'blog.duracionHint' | translate }}</p>
+        </div>
+
+        <div class="field">
+          <label for="content">{{ 'blog.contentLabel' | translate }}</label>
+          <app-rich-text-editor
+            inputId="content"
+            name="content"
+            [content]="blogModel().content"
+            (contentChange)="updateContent($event)"
+          />
+          @if (blogForm.content().touched() && blogForm.content().invalid()) {
+            <p class="text-error">{{ blogForm.content().errors()[0].message | translate }}</p>
+          }
+        </div>
+
+        <div class="field">
+          <label>{{ 'blog.imageLabel' | translate }}</label>
+          <p-fileUpload
+            mode="basic"
+            [chooseLabel]="'blog.imageLabel' | translate"
+            accept="image/png,image/jpeg,image/jpg"
+            [disabled]="uploading()"
+            (onSelect)="onImageSelect($event)"
+          />
+          <app-image-preview-list
+            [images]="pendingImages()"
+            (discard)="discardImage($event)"
+          />
+        </div>
+
+        <div class="actions">
+          <button
+            pButton
+            type="submit"
+            [label]="'blog.accept' | translate"
+            [loading]="submitting()"
+          ></button>
+          <button
+            pButton
+            type="button"
+            [label]="'blog.cancel' | translate"
+            severity="secondary"
+            (click)="cancel()"
+          ></button>
+        </div>
+      </form>
+    </div>
+  </section>
+}

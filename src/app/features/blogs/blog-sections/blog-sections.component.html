@@ -1,0 +1,80 @@
+<p-toast />
+<p-confirmDialog />
+
+<section class="sections-page">
+  <div class="sections-card">
+    <div class="sections-header">
+      <div>
+        <h1>{{ 'blog.manageSections' | translate }}</h1>
+        @if (blog()) {
+          <p class="blog-title">{{ blog()!.title }}</p>
+        }
+      </div>
+      <div class="header-actions">
+        <button
+          pButton
+          type="button"
+          icon="pi pi-arrow-left"
+          [label]="'blog.backToEdit' | translate"
+          severity="secondary"
+          (click)="backToBlogEdit()"
+        ></button>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <p class="loading-text">{{ 'common.loading' | translate }}</p>
+    } @else {
+      @if (sections().length === 0) {
+        <p class="empty-text">{{ 'blog.noSections' | translate }}</p>
+      }
+
+      <div class="sections-list">
+        @for (section of sections(); track section.id) {
+          <article class="section-row">
+            <div class="section-body">
+              <h2>{{ section.name }}</h2>
+              <p>{{ sectionExcerpt(section.description) }}</p>
+            </div>
+            <div class="section-actions">
+              <button
+                pButton
+                type="button"
+                icon="pi pi-pencil"
+                [label]="'blog.edit' | translate"
+                severity="secondary"
+                (click)="editSection(section.id)"
+              ></button>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-trash"
+                [label]="'section.discard' | translate"
+                severity="danger"
+                (click)="deleteSection(section)"
+              ></button>
+            </div>
+          </article>
+        }
+      </div>
+
+      <div class="footer-actions">
+        <button
+          pButton
+          type="button"
+          icon="pi pi-plus"
+          [label]="'blog.addSection' | translate"
+          severity="success"
+          (click)="createSection()"
+        ></button>
+        <button
+          pButton
+          type="button"
+          [label]="'blog.viewBlog' | translate"
+          severity="secondary"
+          (click)="backToBlogView()"
+        ></button>
+      </div>
+    }
+  </div>
+</section>
