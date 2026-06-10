@@ -25,6 +25,16 @@
         <i class="pi pi-chevron-down"></i>
       </button>
 
+      <button
+        type="button"
+        class="lang-btn"
+        (click)="toggleTheme()"
+        [attr.aria-label]="themeLabel()"
+      >
+        <i class="pi {{ currentTheme() === 'dark' ? 'pi-sun' : 'pi-moon' }}"></i>
+        {{ themeLabel() }}
+      </button>
+
       @if (isAuthenticated()) {
         <span class="username">{{ currentUsername() }}</span>
         <button type="button" class="btn-secondary" (click)="logout()">

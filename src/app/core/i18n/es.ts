@@ -5,6 +5,8 @@ export const ES_TRANSLATIONS: Record<string, string> = {
   'nav.logout': 'Cerrar Sesión',
   'nav.language': 'Español',
   'nav.languageAlt': 'English',
+  'nav.darkMode': 'Modo Oscuro',
+  'nav.lightMode': 'Modo Claro',
   'portfolio.title': 'Santiago Nicolás López López',
   'portfolio.subtitle': 'Ingeniero en Formación · QA Engineer · Especialista en Pruebas de Software',
   'portfolio.bio':

@@ -28,6 +28,29 @@
   --transition-default: 200ms ease;
 }
 
+[data-theme="dark"] {
+  --primary-color: #ffffff;
+  --primary-color-hover: #e5e7eb;
+  --secondary-color: #9ca3af;
+  --background-color: #111827;
+  --surface-color: #1f2937;
+  --surface-muted: #374151;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-on-primary: #111827;
+  --border-color: #374151;
+  --color-error: #f87171;
+  --color-info: #60a5fa;
+  --color-danger: #f87171;
+  --color-tag-bg: color-mix(in srgb, var(--primary-color) 10%, transparent);
+  --gradient-hero: linear-gradient(180deg, color-mix(in srgb, var(--primary-color) 5%, transparent), var(--surface-color));
+  --gradient-card: linear-gradient(135deg, color-mix(in srgb, var(--primary-color) 10%, transparent), color-mix(in srgb, var(--secondary-color) 5%, transparent));
+  --gradient-avatar: linear-gradient(135deg, color-mix(in srgb, var(--primary-color) 15%, transparent), color-mix(in srgb, var(--secondary-color) 10%, transparent));
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -2px rgb(0 0 0 / 0.2);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -194,10 +217,14 @@ input, textarea, select {
 
 /* Skeleton loader */
 .skeleton {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, var(--surface-muted) 25%, color-mix(in srgb, var(--surface-muted) 50%, black 10%) 50%, var(--surface-muted) 75%);
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
   border-radius: var(--radius-sm);
+}
+
+[data-theme="dark"] .skeleton {
+  background: linear-gradient(90deg, var(--surface-muted) 25%, color-mix(in srgb, var(--surface-muted) 70%, white 20%) 50%, var(--surface-muted) 75%);
 }
 
 @keyframes loading {
@@ -220,7 +247,7 @@ input, textarea, select {
 }
 
 .btn-secondary {
-  background: white;
+  background: var(--surface-color);
   color: var(--text-primary);
   border: 1px solid var(--border-color);
   padding: 0.625rem 1.5rem;

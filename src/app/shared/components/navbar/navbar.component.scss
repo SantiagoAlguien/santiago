@@ -4,6 +4,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  transition: background-color var(--transition-default), box-shadow var(--transition-default);
 }
 
 .navbar-inner {

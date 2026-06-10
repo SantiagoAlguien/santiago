@@ -5,6 +5,8 @@ export const EN_TRANSLATIONS: Record<string, string> = {
   'nav.logout': 'Sign Out',
   'nav.language': 'English',
   'nav.languageAlt': 'Español',
+  'nav.darkMode': 'Dark Mode',
+  'nav.lightMode': 'Light Mode',
   'portfolio.title': 'Santiago Nicolás López López',
   'portfolio.subtitle': 'Engineer in Training · QA Engineer · Software Testing Specialist',
   'portfolio.bio':
