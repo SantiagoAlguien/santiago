@@ -1,5 +1,5 @@
 .contact {
-  max-width: 850px;
+  max-width: 100%;
   margin: 100px auto 120px auto;
   padding: 0 32px;
   text-align: left;
@@ -9,11 +9,11 @@
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 25px;
-  color: #e5e7eb;
+  color: var(--text-primary);
 }
 
 .contact-description {
-  color: #9ca3af;
+  color: var(--text-secondary);
   margin-bottom: 35px;
   line-height: 1.7;
 }
@@ -32,16 +32,16 @@
 }
 
 .contact-item i {
-  color: #60a5fa;
+  color: var(--color-info);
   font-size: 1rem;
 }
 
 .contact-item a {
-  color: #e5e7eb;
+  color: var(--text-primary);
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: color var(--transition-default);
 }
 
 .contact-item a:hover {
-  color: #60a5fa;
+  color: var(--color-info);
 }

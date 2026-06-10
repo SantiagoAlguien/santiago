@@ -1,18 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ChipModule } from 'primeng/chip';
 
 @Component({
   selector: 'app-skills',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [ChipModule],
   templateUrl: './skills.component.html',
-  styleUrls: ['./skills.component.css']
+  styleUrl: './skills.component.scss',
 })
-export class SkillsComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-}
+export class SkillsComponent {}

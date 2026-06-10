@@ -1,15 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-experience-item',
+  standalone: true,
   templateUrl: './experience-item.component.html',
-  styleUrls: ['./experience-item.component.css']
+  styleUrl: './experience-item.component.scss',
 })
-export class ExperienceItemComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-}
+export class ExperienceItemComponent {}

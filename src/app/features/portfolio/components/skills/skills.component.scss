@@ -1,5 +1,5 @@
 .skills {
-  max-width: 850px;
+  max-width: 100%;
   margin: 80px auto;
   padding: 0 32px;
 }
@@ -8,7 +8,7 @@
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 40px;
-  color: #e5e7eb;
+  color: var(--text-primary);
 }
 
 .skill-category {
@@ -18,7 +18,7 @@
 .skill-category h4 {
   font-size: 1rem;
   font-weight: 500;
-  color: #9ca3af;
+  color: var(--text-secondary);
   margin-bottom: 15px;
 }
 
@@ -28,11 +28,10 @@
   gap: 12px;
 }
 
-/* Estilo oscuro elegante */
-::ng-deep .p-chip {
-  background-color: #1f2937;
-  color: #e5e7eb;
-  border: 1px solid #374151;
+:host ::ng-deep .p-chip {
+  background-color: var(--surface-muted);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   font-size: 0.85rem;
   padding: 6px 12px;
   border-radius: 20px;

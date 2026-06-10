@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { NgOptimizedImage } from '@angular/common';
 import { Blog } from '../../core/models/blog.model';
 import { Section } from '../../core/models/section.model';
 import { BlogService } from '../../services/blog.service';
@@ -9,11 +9,15 @@ import { BlogCardComponent } from '../../shared/components/blog-card/blog-card.c
 import { LoadingSkeletonComponent } from '../../shared/components/loading-skeleton/loading-skeleton.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { TranslationService } from '../../core/i18n/translation.service';
+import { ExperienceComponent } from './components/experience/experience.component';
+import { EducationComponent } from './components/education/education.component';
+import { SkillsComponent } from './components/skills/skills.component';
+import { ContactComponent } from './components/contact/contact.component';
 
 @Component({
   selector: 'app-portfolio',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, NgOptimizedImage, BlogCardComponent, LoadingSkeletonComponent, TranslatePipe],
+  imports: [RouterLink, NgOptimizedImage, BlogCardComponent, LoadingSkeletonComponent, TranslatePipe, ExperienceComponent, EducationComponent, SkillsComponent, ContactComponent],
   templateUrl: './portfolio.component.html',
   styleUrl: './portfolio.component.scss',
 })

@@ -1,5 +1,5 @@
 .experience {
-  max-width: 800px;
+  max-width: 100%;
   margin: 80px auto;
   padding: 0 20px;
 }
@@ -8,13 +8,13 @@
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 40px;
-  color: #e5e7eb;
+  color: var(--text-primary);
 }
 
 .experience-item {
   margin-bottom: 50px;
   padding-bottom: 30px;
-  border-bottom: 1px solid #1f2937;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .experience-header {
@@ -28,24 +28,26 @@
   font-size: 1.1rem;
   font-weight: 500;
   margin: 0;
+  color: var(--text-primary);
 }
 
 .experience-header span {
   font-size: 0.9rem;
-  color: #9ca3af;
+  color: var(--text-secondary);
 }
 
 .role {
   font-size: 0.95rem;
-  color: #9ca3af;
+  color: var(--text-secondary);
   margin-bottom: 15px;
 }
 
 ul {
   padding-left: 18px;
+  margin: 0;
 }
 
 li {
   margin-bottom: 6px;
-  color: #d1d5db;
+  color: var(--text-secondary);
 }
