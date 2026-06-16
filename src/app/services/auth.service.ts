@@ -20,7 +20,7 @@ export class AuthService {
         if (!token) {
           throw new Error('Login response missing token');
         }
-        this.tokenStorage.setToken(token, response.username);
+        this.tokenStorage.setToken(token, response.username, response.role);
       })
     );
   }

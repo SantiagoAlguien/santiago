@@ -13,6 +13,9 @@
         <h1>{{ 'portfolio.title' | translate }}</h1>
         <p class="subtitle">{{ 'portfolio.subtitle' | translate }}</p>
         <p class="bio">{{ 'portfolio.bio' | translate }}</p>
+        @if (cvVisitCount() != null) {
+          <p class="visit-count">👁 {{ cvVisitCount() }} {{ 'portfolio.visits' | translate }}</p>
+        }
       </div>
     </div>
   </div>

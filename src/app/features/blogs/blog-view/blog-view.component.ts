@@ -14,12 +14,12 @@ import { AuthService } from '../../../services/auth.service';
 import { BlogService } from '../../../services/blog.service';
 import { ImageService } from '../../../services/image.service';
 import { SectionService } from '../../../services/section.service';
-import { VisitService } from '../../../services/visit';
+import { VisitService } from '../../../services/visit.service';
 import { BlogCardComponent } from '../../../shared/components/blog-card/blog-card.component';
 import { LoadingSkeletonComponent } from '../../../shared/components/loading-skeleton/loading-skeleton.component';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
-import { getBlogDuration, getBlogExcerpt } from '../../../shared/utils/blog.utils';
+import { getBlogDuration } from '../../../shared/utils/blog.utils';
 import { resolveHtmlImageSources } from '../../../shared/utils/html-images.util';
 
 @Component({
@@ -57,6 +57,7 @@ export class BlogViewComponent implements OnInit {
   readonly blogSections = signal<Section[]>([]);
   readonly allSections = signal<Section[]>([]);
   readonly relatedBlogs = signal<Blog[]>([]);
+  readonly visitCount = signal<number | null>(null);
   readonly loading = signal(true);
   readonly isAdmin = this.authService.isAuthenticated;
 
@@ -79,7 +80,8 @@ export class BlogViewComponent implements OnInit {
       this.blogSections.set([]);
       this.relatedBlogs.set([]);
       this.loadBlog(blogId);
-      this.visitService.registerVisit(blogId).subscribe({ error: () => undefined });
+      this.loadVisitCount(blogId);
+      this.visitService.registerBlogVisit(blogId).subscribe({ error: () => undefined });
       window.scrollTo(0, 0);
     });
   }
@@ -110,6 +112,13 @@ export class BlogViewComponent implements OnInit {
     });
   }
 
+  loadVisitCount(blogId: number): void {
+    this.visitService.getBlogVisitCount(blogId).subscribe({
+      next: (count) => this.visitCount.set(count),
+      error: () => undefined,
+    });
+  }
+
   loadRelated(currentId: number): void {
     const currentBlog = this.blog();
     const currentSectionIds = currentBlog?.sectionIds ?? [];
@@ -125,10 +134,6 @@ export class BlogViewComponent implements OnInit {
       },
       error: () => this.relatedBlogs.set([]),
     });
-  }
-
-  excerpt(content: string): string {
-    return getBlogExcerpt(content, 200);
   }
 
   readTime(): string {

@@ -5,6 +5,7 @@ import { Blog } from '../../core/models/blog.model';
 import { Section } from '../../core/models/section.model';
 import { BlogService } from '../../services/blog.service';
 import { SectionService } from '../../services/section.service';
+import { VisitService } from '../../services/visit.service';
 import { BlogCardComponent } from '../../shared/components/blog-card/blog-card.component';
 import { LoadingSkeletonComponent } from '../../shared/components/loading-skeleton/loading-skeleton.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
@@ -24,11 +25,13 @@ import { ContactComponent } from './components/contact/contact.component';
 export class PortfolioComponent implements OnInit {
   private readonly blogService = inject(BlogService);
   private readonly sectionService = inject(SectionService);
+  private readonly visitService = inject(VisitService);
   private readonly i18n = inject(TranslationService);
 
   readonly blogs = signal<Blog[]>([]);
   readonly sections = signal<Section[]>([]);
   readonly loading = signal(true);
+  readonly cvVisitCount = signal<number | null>(null);
 
   ngOnInit(): void {
     this.sectionService.getSections().subscribe({
@@ -42,6 +45,12 @@ export class PortfolioComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
+    });
+
+    this.visitService.registerBlogVisit(4).subscribe({ error: () => undefined });
+    this.visitService.getBlogVisitCount(4).subscribe({
+      next: (count) => this.cvVisitCount.set(count),
+      error: () => undefined,
     });
   }
 

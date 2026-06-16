@@ -66,36 +66,59 @@ function uploadQuillImage(
   });
 }
 
+export interface ResizePrompt {
+  ask(initialWidth: number, initialHeight: number): Promise<{ width: number; height: number | null } | null>;
+}
+
 export function enableQuillImageResize(
   quill: Quill,
-  onContentSync?: (html: string) => void
+  onContentSync?: (html: string) => void,
+  resizePrompt?: ResizePrompt
 ): void {
-  quill.root.addEventListener('click', (event) => {
+  quill.root.addEventListener('click', async (event) => {
     const target = event.target as HTMLElement;
     if (target.tagName !== 'IMG') {
       return;
     }
     const img = target as HTMLImageElement;
-    const currentWidth = img.width || img.naturalWidth;
-    const newWidth = window.prompt('Ancho de imagen (px):', String(currentWidth));
-    if (newWidth) {
-      const width = parseInt(newWidth, 10);
-      if (!isNaN(width) && width > 0) {
-        img.style.width = `${width}px`;
-        img.style.height = 'auto';
-        img.removeAttribute('width');
-        img.removeAttribute('height');
-        onContentSync?.(quill.root.innerHTML);
+    const currentWidth = img.style.width
+      ? parseInt(img.style.width)
+      : img.width || img.naturalWidth;
+    const currentHeight = img.style.height && img.style.height !== 'auto'
+      ? parseInt(img.style.height)
+      : img.height || img.naturalHeight;
+
+    if (resizePrompt) {
+      const result = await resizePrompt.ask(currentWidth, currentHeight);
+      if (!result) {
+        return;
       }
+      img.style.width = `${result.width}px`;
+      img.style.height = result.height != null ? `${result.height}px` : 'auto';
+      img.removeAttribute('width');
+      img.removeAttribute('height');
+      onContentSync?.(quill.root.innerHTML);
+      return;
     }
+
+    const widthInput = window.prompt('Ancho de imagen (px):', String(currentWidth));
+    if (!widthInput) {
+      return;
+    }
+    const width = parseInt(widthInput, 10);
+    if (isNaN(width) || width <= 0) {
+      return;
+    }
+
+    const heightInput = window.prompt('Alto     de imagen (px, vacío = automático):', String(currentHeight));
+    const height = heightInput ? parseInt(heightInput, 10) : NaN;
+
+    img.style.width = `${width}px`;
+    img.style.height = !isNaN(height) && height > 0 ? `${height}px` : 'auto';
+    img.removeAttribute('width');
+    img.removeAttribute('height');
+    onContentSync?.(quill.root.innerHTML);
   });
 }
 
-export function bindQuillContentSync(
-  quill: Quill,
-  onContentSync: (html: string) => void
-): void {
-  quill.on('text-change', () => {
-    onContentSync(quill.root.innerHTML);
-  });
-}
+

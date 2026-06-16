@@ -1,4 +1,5 @@
 export interface VisitRequest {
-  blogId: number;
-  visitorIp: string;
+  ip: string;
+  visitType: 'CV' | 'BLOG';
+  blogId?: number;
 }

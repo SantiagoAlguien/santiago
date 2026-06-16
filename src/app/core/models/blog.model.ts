@@ -8,6 +8,7 @@ export interface Blog {
   duracion?: string;
   createdAt?: string;
   author?: string;
+  visitCount?: number;
 }
 
 export interface BlogFormModel {

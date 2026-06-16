@@ -10,16 +10,18 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const injector = inject(Injector);
   const token = tokenStorage.getToken();
 
-  const isAuthEndpoint = req.url.includes('/auth/login');
+  const excludedPaths = ['/auth/login', '/users/register', '/visits'];
+  const isExcluded = excludedPaths.some(p => req.url.includes(p));
+  const isGet = req.method === 'GET';
 
   const authReq =
-    token && !isAuthEndpoint
+    token && !isExcluded && !isGet
       ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
       : req;
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401 && !isAuthEndpoint) {
+      if (error.status === 401 && !isExcluded) {
         injector.get(AuthService).logout();
         injector.get(Router).navigate(['/login']);
       }
