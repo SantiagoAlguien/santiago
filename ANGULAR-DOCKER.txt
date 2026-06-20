@@ -1,0 +1,222 @@
+================================================================
+  ANGULAR DOCKER - Instrucciones para contenedorizar frontend
+================================================================
+
+CONTEXTO DEL BACKEND (santiagoback)
+------------------------------------
+
+   Backend: Spring Boot + MySQL 8.0
+   Puerto:  8060
+   API:     http://<IP>:8060/api/*
+   Imagenes: http://<IP>:8060/images/*
+   Auth:    JWT Bearer token (login en /api/auth/login)
+   CORS:    Permitido via variable APP_CORS_ORIGINS
+
+   Archivos de produccion del back (en el Pi):
+   /srv/.../santiagoback/
+   ├── docker-compose.prod.yml
+   ├── .env
+   ├── Dockerfile
+   └── PROD-GUIDE.txt
+
+   Red Tailscale:
+   Pi:  100.x.x.x
+   App back:  http://100.x.x.x:8060
+   App front: http://100.x.x.x:4200  (o puerto que uses)
+
+
+1. DOCKERFILE ANGULAR (multi-stage)
+-------------------------------------
+
+   Crear en raiz del proyecto Angular: Dockerfile
+
+   # Stage 1: Build
+   FROM node:20-alpine AS build
+   WORKDIR /app
+   COPY package*.json ./
+   RUN npm ci
+   COPY . .
+   RUN npm run build -- --configuration production
+
+   # Stage 2: Serve con Nginx
+   FROM nginx:alpine
+   COPY --from=build /app/dist/nombre-del-proyecto/browser /usr/share/nginx/html
+   COPY nginx.conf /etc/nginx/conf.d/default.conf
+   EXPOSE 80
+   CMD ["nginx", "-g", "daemon off;"]
+
+
+2. NGINX CONFIG (proxy al backend)
+------------------------------------
+
+   Crear en raiz del proyecto Angular: nginx.conf
+
+   server {
+       listen 80;
+       server_name localhost;
+       root /usr/share/nginx/html;
+       index index.html;
+
+       # Angular SPA: todas las rutas al index.html
+       location / {
+           try_files $uri $uri/ /index.html;
+       }
+
+       # Proxy al backend (Tailscale IP del Pi)
+       # REEMPLAZAR <TAILSCALE_IP> con IP real al buildear
+       location /backend/ {
+           proxy_pass http://<TAILSCALE_IP>:8060/;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+       }
+   }
+
+   Nota: El proxy en nginx usa path rewrite implicito:
+   /backend/images/x.png -> http://<IP>:8060/images/x.png
+   Esto coincide con ImageGetController (@GetMapping("/images/{fileName}"))
+
+
+3. ENVIRONMENT DE ANGULAR PARA PRODUCCION
+-------------------------------------------
+
+   src/environments/environment.prod.ts:
+
+   export const environment = {
+       production: true,
+       apiUrl: '/backend',       // <-- relativo, nginx proxea
+       imagesUrl: '/backend/images'
+   };
+
+   src/environments/environment.ts (dev local):
+
+   export const environment = {
+       production: false,
+       apiUrl: 'http://localhost:8060',
+       imagesUrl: 'http://localhost:8060/images'
+   };
+
+   En servicios Angular, usar environment.apiUrl para llamadas HTTP.
+   Ejemplo:
+   this.http.get(`${environment.apiUrl}/api/blogs`)
+   this.http.get(`${environment.imagesUrl}/${filename}`)
+
+
+4. DOCKER COMPOSE (opcional: levantar front + back juntos)
+------------------------------------------------------------
+
+   Crear en la Pi, carpeta /srv/.../docker-compose.full.yml:
+
+   services:
+     backend:
+       extends:
+         file: ./santiagoback/docker-compose.prod.yml
+         service: app
+
+     # MySQL ya esta incluido en docker-compose.prod.yml
+
+     frontend:
+       image: angular-frontend:prod
+       build:
+         context: ./angular-frontend
+         platforms:
+           - linux/arm64
+       container_name: angular-frontend
+       restart: unless-stopped
+       ports:
+         - "4200:80"
+       depends_on:
+         - backend
+       networks:
+         - backend
+
+   networks:
+     backend:
+       external: true
+       name: santiagoback_backend
+
+
+5. BUILD Y DEPLOY ANGULAR (en Pi o PC)
+----------------------------------------
+
+   En PC (construir para ARM64 y transferir):
+
+   docker buildx build --platform linux/arm64 -t angular-frontend:prod --load .
+   docker save angular-frontend:prod | gzip > angular-frontend-prod.tar.gz
+   scp angular-frontend-prod.tar.gz root@100.x.x.x:/tmp/
+
+   En Pi:
+
+   docker load < /tmp/angular-frontend-prod.tar.gz
+   docker run -d --name angular-frontend \
+     --network santiagoback_backend \
+     -p 4200:80 \
+     --restart unless-stopped \
+     angular-frontend:prod
+
+
+6. CONEXION TAILSCALE
+-----------------------
+
+   Asegurar que Pi tiene Tailscale corriendo:
+
+   tailscale status
+
+   IP de Tailscale de la Pi: 100.x.x.x
+
+   Desde navegador (cualquier dispositivo en red Tailscale):
+   Frontend: http://100.x.x.x:4200
+   Backend:  http://100.x.x.x:8060/api/blogs
+
+   APP_CORS_ORIGINS en .env del back debe incluir:
+   APP_CORS_ORIGINS=http://100.x.x.x:4200
+
+   Si el frontend tambien se accede desde localhost en la Pi:
+   APP_CORS_ORIGINS=http://100.x.x.x:4200,http://localhost:4200
+
+
+7. FLUJO COMPLETO DE DESPLIEGUE
+---------------------------------
+
+   Pi:
+   /srv/.../
+   ├── santiagoback/          (backend - clonado de git, rama prod)
+   │   ├── docker-compose.prod.yml
+   │   ├── .env
+   │   └── PROD-GUIDE.txt
+   │
+   └── angular-frontend/     (frontend - clonado de git, rama prod o main)
+       ├── Dockerfile
+       └── nginx.conf
+
+   Levantar todo:
+
+   # Backend
+   cd /srv/.../santiagoback
+   docker compose -f docker-compose.prod.yml --env-file .env up -d
+
+   # Frontend
+   cd /srv/.../angular-frontend
+   docker buildx build --platform linux/arm64 -t angular-frontend:prod --load .
+   docker run -d --name angular-frontend \
+     --network santiagoback_backend \
+     -p 4200:80 \
+     --restart unless-stopped \
+     angular-frontend:prod
+
+   Verificar:
+   curl http://localhost:4200
+   curl http://100.x.x.x:8060/api/blogs
+
+
+8. NOTAS
+---------
+- nginx.conf usa <TAILSCALE_IP> placeholder. Reemplazar con IP real
+  antes de buildear, o usar variable de entorno en nginx (mas avanzado).
+- Si usas docker compose conjunto, la red backend se comparte y
+  nginx puede proxy a "backend:8060" en vez de IP Tailscale.
+- Para desarrollo local, Angular usa proxy.conf.json apuntando a
+  localhost:8060 y environment.ts sin docker.
+- Imagenes se sirven desde backend (NO desde nginx).
+  En prod: /backend/images/x.png -> nginx proxy -> backend /images/x.png
